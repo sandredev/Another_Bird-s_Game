@@ -1,5 +1,5 @@
 import pygame as pg
-import physics_values as physics
+import game_parameters as gp
 
 class Bird:
     def __init__(self, init_position = (300, 0), width = 50, height = 50):
@@ -24,9 +24,9 @@ class Bird:
         self.t += dt
         # formula: dy/dt = -t*g + v_0 but -t*g switched to t*g instead to
         # properly show the behavior in the screen
-        self.y_speed = self.t*physics.GRAVITY + self.init_y_speed
+        self.y_speed = self.t*gp.GRAVITY + self.init_y_speed
         self.y_position += self.y_speed*dt # dy = f'(x)dx
-        self.update_position()
+        self.update_position();
     
     def jump(self):
         self.init_y_speed = -500 # jump speed

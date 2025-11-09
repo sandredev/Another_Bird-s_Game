@@ -1,12 +1,13 @@
 import pygame as pg
 import random
+import game_parameters as gp
 
 class Towers:
     def __init__(self, x_init_position):
         self.x_position = x_init_position
         self.speed_movement = -5
-        self.width_towers = 100
-        self.distance_between_towers = 200
+        self.width_towers = gp.WIDTH_TOWER
+        self.distance_between_towers = gp.DISTANCE_BETWEEN_TOWERS
         self.height_lower_tower = self.height_upper_tower = 400
         self.y_position_lower_tower = random.randint(400,800)
         self.y_position_upper_tower = self.y_position_lower_tower - self.distance_between_towers - self.height_upper_tower
@@ -29,3 +30,6 @@ class Towers:
     def draw_as_sprite(self, window):
         window.blit(self.lower_tower_sprite, self.lower_tower)
         window.blit(self.upper_tower_sprite, self.upper_tower)
+
+    def collides_with_bird(self, bird_object):
+        return self.lower_tower.colliderect(bird_object.rectangle) or self.upper_tower.colliderect(bird_object.rectangle)

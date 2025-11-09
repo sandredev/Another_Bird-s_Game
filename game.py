@@ -1,13 +1,14 @@
 import pygame as pg
 import bird 
 import towers
+import game_parameters as gp
 
 def start():
     pg.init()
 
     # Objects and window setup
-    width = 800
-    height = 600
+    width = gp.WIDTH_SCREEN
+    height = gp.HEIGHT_SCREEN
     bird_object = bird.Bird((width/2, 0), 70, 50)
     window = pg.display.set_mode((width, height))
     pg.display.set_caption("Another Bird's Game")
@@ -16,17 +17,23 @@ def start():
     dt = 0
     is_jumping = False
 
+    # Cooldowns setup
     jump_cooldown_clock = pg.time.Clock()
     jump_cooldown_time = 0
-    JUMP_COOLDOWN_LIMIT = 0.1
+    JUMP_COOLDOWN_LIMIT = gp.JUMP_COOLDOWN_LIMIT
 
+    # Towers generator setup
     towers_generator_cooldown_clock = pg.time.Clock()
     towers_generator_cooldown_time = 0
-    TOWERS_GENERATOR_COOLDOWN_LIMIT = 1.6
+    TOWERS_GENERATOR_COOLDOWN_LIMIT = gp.TOWERS_GENERATOR_COOLDOWN_LIMIT
     towers_generator = []
 
+    # Background setup
     background_img = pg.image.load("img/background.gif")
     background_img = pg.transform.scale(background_img, (width, height))
+
+    life_count = gp.LIFE_COUNT
+    score = 0
 
     while run:
         for event in pg.event.get():
@@ -63,18 +70,31 @@ def start():
         # Drawing
         window.blit(background_img, (0,0))
         bird_object.draw_as_sprite(window)
-        
-        # Draw and move towers
+    
+        # Towers drawing, movement and collision detection
         for towers_object in towers_generator:
             towers_object.draw_as_sprite(window)
             towers_object.move()
+            if towers_object.collides_with_bird(bird_object):
+                life_count -= 1
+                print(f"Lives left: {life_count}")
+                towers_generator.remove(towers_object)
+                if life_count <= 0:
+                    print("Game Over!")
+                    run = False
+            if towers_object.x_position + towers_object.width_towers/2 < bird_object.x_position and not hasattr(towers_object, 'scored'):
+                score += 1
+                print(f"Score: {score}")
+                towers_object.scored = True
+    
+
         # Cleanup off-screen towers
         towers_generator = [t for t in towers_generator if t.x_position + t.width_towers/2 >= 0]
         
         pg.display.flip()
 
         # Timing
-        dt = clock.tick(60) / 1000 
+        dt = clock.tick(gp.FPS) / 1000 
         jump_cooldown_time += jump_cooldown_clock.tick() / 1000
         towers_generator_cooldown_time += towers_generator_cooldown_clock.tick() / 1000
 
