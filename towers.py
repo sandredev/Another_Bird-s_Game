@@ -8,7 +8,7 @@ class Towers:
         self.speed_movement = -5
         self.width_towers = gp.WIDTH_TOWER
         self.distance_between_towers = gp.DISTANCE_BETWEEN_TOWERS
-        self.height_lower_tower = self.height_upper_tower = 400
+        self.height_lower_tower = self.height_upper_tower = 500
         self.y_position_lower_tower = random.randint(400,800)
         self.y_position_upper_tower = self.y_position_lower_tower - self.distance_between_towers - self.height_upper_tower
         self.lower_tower = pg.Rect(self.x_position, self.y_position_lower_tower, self.width_towers, self.height_lower_tower)
